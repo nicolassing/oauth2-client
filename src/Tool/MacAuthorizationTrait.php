@@ -68,11 +68,11 @@ trait MacAuthorizationTrait
         $nonce = $this->getRandomState(16);
         $mac   = $this->getMacSignature($id, $ts, $nonce);
 
-        $parts = [];
+        $parts = array();
         foreach (compact('id', 'ts', 'nonce', 'mac') as $key => $value) {
             $parts[] = sprintf('%s="%s"', $key, $value);
         }
 
-        return ['Authorization' => 'MAC ' . implode(', ', $parts)];
+        return array('Authorization' => 'MAC ' . implode(', ', $parts));
     }
 }

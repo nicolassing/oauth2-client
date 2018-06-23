@@ -14,7 +14,8 @@
 
 namespace League\OAuth2\Client\Grant;
 
-use League\OAuth2\Client\Tool\RequiredParameterTrait;
+use BadMethodCallException;
+use InvalidArgumentException;
 
 /**
  * Represents a type of authorization grant.
@@ -30,8 +31,6 @@ use League\OAuth2\Client\Tool\RequiredParameterTrait;
  */
 abstract class AbstractGrant
 {
-    use RequiredParameterTrait;
-
     /**
      * Returns the name of this grant, eg. 'grant_name', which is used as the
      * grant type when encoding URL query parameters.
@@ -66,7 +65,7 @@ abstract class AbstractGrant
      * @param  array $options
      * @return array
      */
-    public function prepareRequestParameters(array $defaults, array $options)
+    public function prepareRequestParameters($defaults, $options)
     {
         $defaults['grant_type'] = $this->getName();
 
@@ -76,5 +75,38 @@ abstract class AbstractGrant
         $this->checkRequiredParameters($required, $provided);
 
         return $provided;
+    }
+
+    /**
+     * Checks for a required parameter in a hash.
+     *
+     * @throws BadMethodCallException
+     * @param  string $name
+     * @param  array  $params
+     * @return void
+     */
+    private function checkRequiredParameter($name, $params)
+    {
+        if (!isset($params[$name])) {
+            throw new BadMethodCallException(sprintf(
+                'Required parameter not passed: "%s"',
+                $name
+            ));
+        }
+    }
+
+    /**
+     * Checks for multiple required parameters in a hash.
+     *
+     * @throws InvalidArgumentException
+     * @param  array $names
+     * @param  array $params
+     * @return void
+     */
+    private function checkRequiredParameters($names, $params)
+    {
+        foreach ($names as $name) {
+            $this->checkRequiredParameter($name, $params);
+        }
     }
 }

@@ -133,7 +133,7 @@ class GenericProviderTest extends TestCase
      * @dataProvider checkResponseThrowsExceptionProvider
      * @expectedException League\Oauth2\Client\Provider\Exception\IdentityProviderException
      */
-    public function testCheckResponseThrowsException(array $error, array $extraOptions = [])
+    public function testCheckResponseThrowsException($error, $extraOptions = array())
     {
         $response = Phony::mock(ResponseInterface::class);
 

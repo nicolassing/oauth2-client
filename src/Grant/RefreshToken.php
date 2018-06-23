@@ -34,8 +34,8 @@ class RefreshToken extends AbstractGrant
      */
     protected function getRequiredRequestParameters()
     {
-        return [
+        return array(
             'refresh_token',
-        ];
+        );
     }
 }

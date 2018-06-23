@@ -7,7 +7,7 @@ use League\OAuth2\Client\Provider\GenericProvider;
 
 class Generic extends GenericProvider
 {
-    public function __construct($options = [], array $collaborators = [])
+    public function __construct($options = array(), $collaborators = array())
     {
         // Add the required defaults for AbstractProvider
         $options += [

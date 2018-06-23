@@ -34,9 +34,9 @@ class Password extends AbstractGrant
      */
     protected function getRequiredRequestParameters()
     {
-        return [
+        return array(
             'username',
-            'password',
-        ];
+            'password'
+        );
     }
 }

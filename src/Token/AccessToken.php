@@ -47,7 +47,7 @@ class AccessToken implements AccessTokenInterface
     /**
      * @var array
      */
-    protected $values = [];
+    protected $values = array();
 
     /**
      * Constructs an access token.
@@ -56,7 +56,7 @@ class AccessToken implements AccessTokenInterface
      *     in the access token request. The `access_token` option is required.
      * @throws InvalidArgumentException if `access_token` is not provided in `$options`.
      */
-    public function __construct(array $options = [])
+    public function __construct($options = array())
     {
         if (empty($options['access_token'])) {
             throw new InvalidArgumentException('Required option not passed: "access_token"');
@@ -96,13 +96,13 @@ class AccessToken implements AccessTokenInterface
         // Capture any additional values that might exist in the token but are
         // not part of the standard response. Vendors will sometimes pass
         // additional user data this way.
-        $this->values = array_diff_key($options, array_flip([
+        $this->values = array_diff_key($options, array_flip(array(
             'access_token',
             'resource_owner_id',
             'refresh_token',
             'expires_in',
             'expires',
-        ]));
+        )));
     }
 
     /**

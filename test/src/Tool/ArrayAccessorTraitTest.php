@@ -20,7 +20,7 @@ class ArrayAccessorTraitTest extends TestCase
 
     public function testGetNonExistentValueWithDefault()
     {
-        $array = [];
+        $array = array();
         $default = 'foo';
 
         $result = $this->getValueByKey($array, 'bar', $default);

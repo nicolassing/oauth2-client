@@ -26,7 +26,7 @@ trait QueryBuilderTrait
      *
      * @return string
      */
-    protected function buildQueryString(array $params)
+    protected function buildQueryString($params)
     {
         return http_build_query($params, null, '&', \PHP_QUERY_RFC3986);
     }

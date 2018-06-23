@@ -16,7 +16,7 @@ class AccessTokenTest extends TestCase
         $token = $this->getAccessToken(['invalid_access_token' => 'none']);
     }
 
-    protected function getAccessToken($options = [])
+    protected function getAccessToken($options = array())
     {
         return new AccessToken($options);
     }

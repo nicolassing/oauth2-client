@@ -24,7 +24,7 @@ class GrantFactory
     /**
      * @var array
      */
-    protected $registry = [];
+    protected $registry = array();
 
     /**
      * Defines a grant singleton in the registry.
@@ -66,7 +66,7 @@ class GrantFactory
     protected function registerDefaultGrant($name)
     {
         // PascalCase the grant. E.g: 'authorization_code' becomes 'AuthorizationCode'
-        $class = str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $name)));
+        $class = str_replace(' ', '', ucwords(str_replace(array('-', '_'), ' ', $name)));
         $class = 'League\\OAuth2\\Client\\Grant\\' . $class;
 
         $this->checkGrant($class);
@@ -82,7 +82,7 @@ class GrantFactory
      */
     public function isGrant($class)
     {
-        return is_subclass_of($class, AbstractGrant::class);
+        return is_subclass_of($class, 'League\\OAuth2\\Client\\Grant\\AbstractGrant');
     }
 
     /**

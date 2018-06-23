@@ -34,8 +34,8 @@ class AuthorizationCode extends AbstractGrant
      */
     protected function getRequiredRequestParameters()
     {
-        return [
+        return array(
             'code',
-        ];
+        );
     }
 }

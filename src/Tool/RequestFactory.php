@@ -37,7 +37,7 @@ class RequestFactory
     public function getRequest(
         $method,
         $uri,
-        array $headers = [],
+        array $headers = array(),
         $body = null,
         $version = '1.1'
     ) {
@@ -51,14 +51,14 @@ class RequestFactory
      *
      * @return array Extended options for use with getRequest.
      */
-    protected function parseOptions(array $options)
+    protected function parseOptions($options)
     {
         // Should match default values for getRequest
-        $defaults = [
+        $defaults = array(
             'headers' => [],
             'body'    => null,
             'version' => '1.1',
-        ];
+        );
 
         return array_merge($defaults, $options);
     }
@@ -72,7 +72,7 @@ class RequestFactory
      *
      * @return Request
      */
-    public function getRequestWithOptions($method, $uri, array $options = [])
+    public function getRequestWithOptions($method, $uri, $options = array())
     {
         $options = $this->parseOptions($options);
 

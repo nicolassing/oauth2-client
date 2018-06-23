@@ -33,7 +33,7 @@ class GenericResourceOwner implements ResourceOwnerInterface
      * @param array $response
      * @param string $resourceOwnerId
      */
-    public function __construct(array $response, $resourceOwnerId)
+    public function __construct($response, $resourceOwnerId)
     {
         $this->response = $response;
         $this->resourceOwnerId = $resourceOwnerId;

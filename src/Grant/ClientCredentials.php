@@ -34,6 +34,6 @@ class ClientCredentials extends AbstractGrant
      */
     protected function getRequiredRequestParameters()
     {
-        return [];
+        return array();
     }
 }

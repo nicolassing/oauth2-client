@@ -48,7 +48,7 @@ abstract class GrantTestCase extends TestCase
     /**
      * @dataProvider providerGetAccessToken
      */
-    public function testGetAccessToken($grant, array $params = [])
+    public function testGetAccessToken($grant, $params = array())
     {
         // Mock
         $stream = Phony::mock(StreamInterface::class);

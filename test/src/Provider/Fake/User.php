@@ -11,7 +11,7 @@ class User implements ResourceOwnerInterface
      */
     protected $response;
 
-    public function __construct(array $response)
+    public function __construct($response)
     {
         $this->response = $response;
     }

@@ -82,7 +82,7 @@ class GenericProvider extends AbstractProvider
      * @param array $options
      * @param array $collaborators
      */
-    public function __construct(array $options = [], array $collaborators = [])
+    public function __construct($options = array(), $collaborators = array())
     {
         $this->assertRequiredOptions($options);
 
@@ -106,7 +106,7 @@ class GenericProvider extends AbstractProvider
      */
     protected function getConfigurableOptions()
     {
-        return array_merge($this->getRequiredOptions(), [
+        return array_merge($this->getRequiredOptions(), array(
             'accessTokenMethod',
             'accessTokenResourceOwnerId',
             'scopeSeparator',
@@ -114,7 +114,7 @@ class GenericProvider extends AbstractProvider
             'responseCode',
             'responseResourceOwnerId',
             'scopes',
-        ]);
+        ));
     }
 
     /**
@@ -124,11 +124,11 @@ class GenericProvider extends AbstractProvider
      */
     protected function getRequiredOptions()
     {
-        return [
+        return array(
             'urlAuthorize',
             'urlAccessToken',
             'urlResourceOwnerDetails',
-        ];
+        );
     }
 
     /**
@@ -138,7 +138,7 @@ class GenericProvider extends AbstractProvider
      * @return void
      * @throws InvalidArgumentException
      */
-    private function assertRequiredOptions(array $options)
+    private function assertRequiredOptions($options)
     {
         $missing = array_diff_key(array_flip($this->getRequiredOptions()), $options);
 
@@ -160,7 +160,7 @@ class GenericProvider extends AbstractProvider
     /**
      * @inheritdoc
      */
-    public function getBaseAccessTokenUrl(array $params)
+    public function getBaseAccessTokenUrl($params)
     {
         return $this->urlAccessToken;
     }
@@ -226,7 +226,7 @@ class GenericProvider extends AbstractProvider
     /**
      * @inheritdoc
      */
-    protected function createResourceOwner(array $response, AccessTokenInterface $token)
+    protected function createResourceOwner($response, AccessTokenInterface $token)
     {
         return new GenericResourceOwner($response, $this->responseResourceOwnerId);
     }

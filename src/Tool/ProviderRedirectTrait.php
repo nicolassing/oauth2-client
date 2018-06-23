@@ -32,9 +32,9 @@ trait ProviderRedirectTrait
 
         while ($attempts < $this->redirectLimit) {
             $attempts++;
-            $response = $this->getHttpClient()->send($request, [
+            $response = $this->getHttpClient()->send($request, array(
                 'allow_redirects' => false
-            ]);
+            ));
 
             if ($this->isRedirect($response)) {
                 $redirectUrl = new Uri($response->getHeader('Location')[0]);

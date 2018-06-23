@@ -273,7 +273,7 @@ class AbstractProviderTest extends TestCase
             'name'  => null,
         ];
 
-        $response3 = [];
+        $response3 = array();
 
         return [
             'full response'  => [$response, 'test', 'test@example.com', 1],

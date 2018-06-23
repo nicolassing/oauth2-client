@@ -22,8 +22,6 @@ use League\OAuth2\Client\Grant\GrantFactory;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessTokenInterface;
 use League\OAuth2\Client\Token\AccessToken;
-use League\OAuth2\Client\Tool\ArrayAccessorTrait;
-use League\OAuth2\Client\Tool\QueryBuilderTrait;
 use League\OAuth2\Client\Tool\RequestFactory;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -36,9 +34,6 @@ use UnexpectedValueException;
  */
 abstract class AbstractProvider
 {
-    use ArrayAccessorTrait;
-    use QueryBuilderTrait;
-
     /**
      * @var string Key used in a token response to identify the resource owner.
      */
@@ -100,7 +95,7 @@ abstract class AbstractProvider
      *     `grantFactory`, `requestFactory`, and `httpClient`.
      *     Individual providers may introduce more collaborators, as needed.
      */
-    public function __construct(array $options = [], array $collaborators = [])
+    public function __construct($options = array(), $collaborators = array())
     {
         foreach ($options as $option => $value) {
             if (property_exists($this, $option)) {
@@ -136,9 +131,9 @@ abstract class AbstractProvider
      *     Individual providers may introduce more options, as needed.
      * @return array The options to pass to the HttpClient constructor
      */
-    protected function getAllowedClientOptions(array $options)
+    protected function getAllowedClientOptions($options)
     {
-        $client_options = ['timeout', 'proxy'];
+        $client_options = array('timeout', 'proxy');
 
         // Only allow turning off ssl verification if it's for a proxy
         if (!empty($options['proxy'])) {
@@ -246,7 +241,7 @@ abstract class AbstractProvider
      * @param array $params
      * @return string
      */
-    abstract public function getBaseAccessTokenUrl(array $params);
+    abstract public function getBaseAccessTokenUrl($params);
 
     /**
      * Returns the URL for requesting the resource owner's details.
@@ -297,7 +292,7 @@ abstract class AbstractProvider
      * @param  array $options
      * @return array Authorization parameters
      */
-    protected function getAuthorizationParameters(array $options)
+    protected function getAuthorizationParameters($options)
     {
         if (empty($options['state'])) {
             $options['state'] = $this->getRandomState();
@@ -307,10 +302,10 @@ abstract class AbstractProvider
             $options['scope'] = $this->getDefaultScopes();
         }
 
-        $options += [
+        array_merge($options, array(
             'response_type'   => 'code',
             'approval_prompt' => 'auto'
-        ];
+        ));
 
         if (is_array($options['scope'])) {
             $separator = $this->getScopeSeparator();
@@ -337,7 +332,7 @@ abstract class AbstractProvider
      * @param  array $params Query parameters
      * @return string Query string
      */
-    protected function getAuthorizationQuery(array $params)
+    protected function getAuthorizationQuery($params)
     {
         return $this->buildQueryString($params);
     }
@@ -348,7 +343,7 @@ abstract class AbstractProvider
      * @param  array $options
      * @return string Authorization URL
      */
-    public function getAuthorizationUrl(array $options = [])
+    public function getAuthorizationUrl($options = array())
     {
         $base   = $this->getBaseAuthorizationUrl();
         $params = $this->getAuthorizationParameters($options);
@@ -365,7 +360,7 @@ abstract class AbstractProvider
      * @return mixed
      */
     public function authorize(
-        array $options = [],
+        array $options = array(),
         callable $redirectHandler = null
     ) {
         $url = $this->getAuthorizationUrl($options);
@@ -424,7 +419,7 @@ abstract class AbstractProvider
      * @param  array $params Query parameters
      * @return string Query string
      */
-    protected function getAccessTokenQuery(array $params)
+    protected function getAccessTokenQuery($params)
     {
         return $this->buildQueryString($params);
     }
@@ -452,7 +447,7 @@ abstract class AbstractProvider
      * @param array $params Query parameters
      * @return string
      */
-    protected function getAccessTokenUrl(array $params)
+    protected function getAccessTokenUrl($params)
     {
         $url = $this->getBaseAccessTokenUrl($params);
 
@@ -470,7 +465,7 @@ abstract class AbstractProvider
      * @param  array $params
      * @return string
      */
-    protected function getAccessTokenBody(array $params)
+    protected function getAccessTokenBody($params)
     {
         return $this->buildQueryString($params);
     }
@@ -481,7 +476,7 @@ abstract class AbstractProvider
      * @param  array $params
      * @return array
      */
-    protected function getAccessTokenOptions(array $params)
+    protected function getAccessTokenOptions($params)
     {
         $options = ['headers' => ['content-type' => 'application/x-www-form-urlencoded']];
 
@@ -498,7 +493,7 @@ abstract class AbstractProvider
      * @param array $params Query string parameters
      * @return RequestInterface
      */
-    protected function getAccessTokenRequest(array $params)
+    protected function getAccessTokenRequest($params)
     {
         $method  = $this->getAccessTokenMethod();
         $url     = $this->getAccessTokenUrl($params);
@@ -514,7 +509,7 @@ abstract class AbstractProvider
      * @param  array $options
      * @return AccessTokenInterface
      */
-    public function getAccessToken($grant, array $options = [])
+    public function getAccessToken($grant, $options = array())
     {
         $grant = $this->verifyGrant($grant);
 
@@ -541,7 +536,7 @@ abstract class AbstractProvider
      * @param  array $options
      * @return RequestInterface
      */
-    public function getRequest($method, $url, array $options = [])
+    public function getRequest($method, $url, $options = array())
     {
         return $this->createRequest($method, $url, null, $options);
     }
@@ -555,7 +550,7 @@ abstract class AbstractProvider
      * @param  array $options Any of "headers", "body", and "protocolVersion".
      * @return RequestInterface
      */
-    public function getAuthenticatedRequest($method, $url, $token, array $options = [])
+    public function getAuthenticatedRequest($method, $url, $token, $options = array())
     {
         return $this->createRequest($method, $url, $token, $options);
     }
@@ -569,7 +564,7 @@ abstract class AbstractProvider
      * @param  array $options
      * @return RequestInterface
      */
-    protected function createRequest($method, $url, $token, array $options)
+    protected function createRequest($method, $url, $token, $options)
     {
         $defaults = [
             'headers' => $this->getHeaders($token),
@@ -589,6 +584,7 @@ abstract class AbstractProvider
      *
      * @param  RequestInterface $request
      * @return ResponseInterface
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getResponse(RequestInterface $request)
     {
@@ -600,6 +596,8 @@ abstract class AbstractProvider
      *
      * @param  RequestInterface $request
      * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws IdentityProviderException
      */
     public function getParsedResponse(RequestInterface $request)
     {
@@ -706,7 +704,7 @@ abstract class AbstractProvider
      * @param  mixed $result
      * @return array
      */
-    protected function prepareAccessTokenResponse(array $result)
+    protected function prepareAccessTokenResponse($result)
     {
         if ($this->getAccessTokenResourceOwnerId() !== null) {
             $result['resource_owner_id'] = $this->getValueByKey(
@@ -727,7 +725,7 @@ abstract class AbstractProvider
      * @param  AbstractGrant $grant
      * @return AccessTokenInterface
      */
-    protected function createAccessToken(array $response, AbstractGrant $grant)
+    protected function createAccessToken($response, AbstractGrant $grant)
     {
         return new AccessToken($response);
     }
@@ -740,7 +738,7 @@ abstract class AbstractProvider
      * @param  AccessTokenInterface $token
      * @return ResourceOwnerInterface
      */
-    abstract protected function createResourceOwner(array $response, AccessTokenInterface $token);
+    abstract protected function createResourceOwner($response, AccessTokenInterface $token);
 
     /**
      * Requests and returns the resource owner of given access token.
@@ -825,5 +823,48 @@ abstract class AbstractProvider
         }
 
         return $this->getDefaultHeaders();
+    }
+
+    /**
+     * Returns a value by key using dot notation.
+     *
+     * @param  array      $data
+     * @param  string     $key
+     * @param  mixed|null $default
+     * @return mixed
+     */
+    private function getValueByKey($data, $key, $default = null)
+    {
+        if (!is_string($key) || empty($key) || !count($data)) {
+            return $default;
+        }
+
+        if (strpos($key, '.') !== false) {
+            $keys = explode('.', $key);
+
+            foreach ($keys as $innerKey) {
+                if (!is_array($data) || !array_key_exists($innerKey, $data)) {
+                    return $default;
+                }
+
+                $data = $data[$innerKey];
+            }
+
+            return $data;
+        }
+
+        return array_key_exists($key, $data) ? $data[$key] : $default;
+    }
+
+    /**
+     * Build a query string from an array.
+     *
+     * @param array $params
+     *
+     * @return string
+     */
+    protected function buildQueryString($params)
+    {
+        return http_build_query($params, null, '&', \PHP_QUERY_RFC3986);
     }
 }

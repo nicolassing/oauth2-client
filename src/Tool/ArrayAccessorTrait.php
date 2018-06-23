@@ -27,7 +27,7 @@ trait ArrayAccessorTrait
      * @param  mixed|null $default
      * @return mixed
      */
-    private function getValueByKey(array $data, $key, $default = null)
+    private function getValueByKey($data, $key, $default = null)
     {
         if (!is_string($key) || empty($key) || !count($data)) {
             return $default;
