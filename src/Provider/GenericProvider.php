@@ -17,8 +17,7 @@ namespace League\OAuth2\Client\Provider;
 use InvalidArgumentException;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessTokenInterface;
-use League\OAuth2\Client\Tool\BearerAuthorizationTrait;
-use Psr\Http\Message\ResponseInterface;
+use Guzzle\Http\Message\Response;
 
 /**
  * Represents a generic service provider that may be used to interact with any
@@ -26,8 +25,6 @@ use Psr\Http\Message\ResponseInterface;
  */
 class GenericProvider extends AbstractProvider
 {
-    use BearerAuthorizationTrait;
-
     /**
      * @var string
      */
@@ -208,7 +205,7 @@ class GenericProvider extends AbstractProvider
     /**
      * @inheritdoc
      */
-    protected function checkResponse(ResponseInterface $response, $data)
+    protected function checkResponse(Response $response, $data)
     {
         if (!empty($data[$this->responseError])) {
             $error = $data[$this->responseError];
@@ -229,5 +226,16 @@ class GenericProvider extends AbstractProvider
     protected function createResourceOwner($response, AccessTokenInterface $token)
     {
         return new GenericResourceOwner($response, $this->responseResourceOwnerId);
+    }
+
+    /**
+     * Returns authorization headers for the 'bearer' grant.
+     *
+     * @param  mixed|null $token Either a string or an access token instance
+     * @return array
+     */
+    protected function getAuthorizationHeaders($token = null)
+    {
+        return array('Authorization' => 'Bearer ' . $token);
     }
 }

@@ -26,11 +26,11 @@ and implement the required abstract methods:
 <?php
 
 abstract public function getBaseAuthorizationUrl();
-abstract public function getBaseAccessTokenUrl(array $params);
+abstract public function getBaseAccessTokenUrl($params);
 abstract public function getResourceOwnerDetailsUrl(AccessToken $token);
 abstract protected function getDefaultScopes();
 abstract protected function checkResponse(ResponseInterface $response, $data);
-abstract protected function createResourceOwner(array $response, AccessToken $token);
+abstract protected function createResourceOwner($response, AccessToken $token);
 ~~~
 
 Each of these abstract methods contain a docblock defining their expectations

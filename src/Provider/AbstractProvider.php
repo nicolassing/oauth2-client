@@ -14,17 +14,17 @@
 
 namespace League\OAuth2\Client\Provider;
 
-use GuzzleHttp\Client as HttpClient;
-use GuzzleHttp\ClientInterface as HttpClientInterface;
-use GuzzleHttp\Exception\BadResponseException;
+use Guzzle\Http\Client as HttpClient;
+use Guzzle\Http\ClientInterface as HttpClientInterface;
+use Guzzle\Http\Exception\BadResponseException;
 use League\OAuth2\Client\Grant\AbstractGrant;
 use League\OAuth2\Client\Grant\GrantFactory;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessTokenInterface;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Tool\RequestFactory;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
+use Guzzle\Http\Message\RequestInterface;
+use Guzzle\Http\Message\Response;
 use UnexpectedValueException;
 
 /**
@@ -478,7 +478,7 @@ abstract class AbstractProvider
      */
     protected function getAccessTokenOptions($params)
     {
-        $options = ['headers' => ['content-type' => 'application/x-www-form-urlencoded']];
+        $options = array('headers' => array('content-type' => 'application/x-www-form-urlencoded'));
 
         if ($this->getAccessTokenMethod() === self::METHOD_POST) {
             $options['body'] = $this->getAccessTokenBody($params);
@@ -513,11 +513,11 @@ abstract class AbstractProvider
     {
         $grant = $this->verifyGrant($grant);
 
-        $params = [
+        $params = array(
             'client_id'     => $this->clientId,
             'client_secret' => $this->clientSecret,
             'redirect_uri'  => $this->redirectUri,
-        ];
+        );
 
         $params   = $grant->prepareRequestParameters($params, $options);
         $request  = $this->getAccessTokenRequest($params);
@@ -566,9 +566,9 @@ abstract class AbstractProvider
      */
     protected function createRequest($method, $url, $token, $options)
     {
-        $defaults = [
+        $defaults = array(
             'headers' => $this->getHeaders($token),
-        ];
+        );
 
         $options = array_merge_recursive($defaults, $options);
         $factory = $this->getRequestFactory();
@@ -582,9 +582,8 @@ abstract class AbstractProvider
      * WARNING: This method does not attempt to catch exceptions caused by HTTP
      * errors! It is recommended to wrap this method in a try/catch block.
      *
-     * @param  RequestInterface $request
-     * @return ResponseInterface
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @param RequestInterface $request
+     * @return array|Response
      */
     public function getResponse(RequestInterface $request)
     {
@@ -596,7 +595,6 @@ abstract class AbstractProvider
      *
      * @param  RequestInterface $request
      * @return mixed
-     * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws IdentityProviderException
      */
     public function getParsedResponse(RequestInterface $request)
@@ -638,10 +636,10 @@ abstract class AbstractProvider
     /**
      * Returns the content type header of a response.
      *
-     * @param  ResponseInterface $response
+     * @param Response $response
      * @return string Semi-colon separated join of content-type headers.
      */
-    protected function getContentType(ResponseInterface $response)
+    protected function getContentType(Response $response)
     {
         return join(';', (array) $response->getHeader('content-type'));
     }
@@ -650,10 +648,10 @@ abstract class AbstractProvider
      * Parses the response according to its content-type header.
      *
      * @throws UnexpectedValueException
-     * @param  ResponseInterface $response
-     * @return array
+     * @param  Response $response
+     * @return array|string
      */
-    protected function parseResponse(ResponseInterface $response)
+    protected function parseResponse(Response $response)
     {
         $content = (string) $response->getBody();
         $type = $this->getContentType($response);
@@ -689,11 +687,11 @@ abstract class AbstractProvider
      * Checks a provider response for errors.
      *
      * @throws IdentityProviderException
-     * @param  ResponseInterface $response
+     * @param  Response $response
      * @param  array|string $data Parsed response data
      * @return void
      */
-    abstract protected function checkResponse(ResponseInterface $response, $data);
+    abstract protected function checkResponse(Response $response, $data);
 
     /**
      * Prepares an parsed access token response for a grant.
@@ -756,8 +754,9 @@ abstract class AbstractProvider
     /**
      * Requests resource owner details.
      *
-     * @param  AccessTokenInterface $token
+     * @param AccessTokenInterface $token
      * @return mixed
+     * @throws IdentityProviderException
      */
     protected function fetchResourceOwnerDetails(AccessTokenInterface $token)
     {
@@ -785,7 +784,7 @@ abstract class AbstractProvider
      */
     protected function getDefaultHeaders()
     {
-        return [];
+        return array();
     }
 
     /**
@@ -802,7 +801,7 @@ abstract class AbstractProvider
      */
     protected function getAuthorizationHeaders($token = null)
     {
-        return [];
+        return array();
     }
 
     /**
