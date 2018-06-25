@@ -14,7 +14,7 @@
 
 namespace League\OAuth2\Client\Tool;
 
-use GuzzleHttp\Psr7\Request;
+use Guzzle\Http\Message\Request;
 
 /**
  * Used to produce PSR-7 Request instances.
@@ -29,7 +29,6 @@ class RequestFactory
      * @param  null|string $method HTTP method for the request.
      * @param  null|string $uri URI for the request.
      * @param  array $headers Headers for the message.
-     * @param  string|resource|StreamInterface $body Message body.
      * @param  string $version HTTP protocol version.
      *
      * @return Request
@@ -38,10 +37,12 @@ class RequestFactory
         $method,
         $uri,
         array $headers = array(),
-        $body = null,
         $version = '1.1'
     ) {
-        return new Request($method, $uri, $headers, $body, $version);
+        $request = new Request($method, $uri, $headers);
+        $request->setProtocolVersion($version);
+
+        return $request;
     }
 
     /**
@@ -55,8 +56,7 @@ class RequestFactory
     {
         // Should match default values for getRequest
         $defaults = array(
-            'headers' => [],
-            'body'    => null,
+            'headers' => array(),
             'version' => '1.1',
         );
 
@@ -80,7 +80,6 @@ class RequestFactory
             $method,
             $uri,
             $options['headers'],
-            $options['body'],
             $options['version']
         );
     }

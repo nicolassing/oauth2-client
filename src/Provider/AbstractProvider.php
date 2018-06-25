@@ -480,10 +480,6 @@ abstract class AbstractProvider
     {
         $options = array('headers' => array('content-type' => 'application/x-www-form-urlencoded'));
 
-        if ($this->getAccessTokenMethod() === self::METHOD_POST) {
-            $options['body'] = $this->getAccessTokenBody($params);
-        }
-
         return $options;
     }
 
@@ -521,7 +517,7 @@ abstract class AbstractProvider
 
         $params   = $grant->prepareRequestParameters($params, $options);
         $request  = $this->getAccessTokenRequest($params);
-        $response = $this->getParsedResponse($request);
+        $response = $this->getParsedResponse($request, $params);
         $prepared = $this->prepareAccessTokenResponse($response);
         $token    = $this->createAccessToken($prepared, $grant);
 
@@ -585,9 +581,71 @@ abstract class AbstractProvider
      * @param RequestInterface $request
      * @return array|Response
      */
-    public function getResponse(RequestInterface $request)
+    public function getResponse(RequestInterface $request, $params = array())
     {
-        return $this->getHttpClient()->send($request);
+        if ($request->getMethod() == RequestInterface::GET) {
+            if (isset($params['body']) && !empty($params['body'])) {
+                $options = array('body' => $params['body']);
+            } else {
+                $options = array();
+            }
+
+            $request = $this->getHttpClient()->get(
+                $request->getUrl(),
+                $request->getHeaders(),
+                $options
+            );
+        } elseif ($request->getMethod() == RequestInterface::POST) {
+            if (isset($params['body']) && !empty($params['body'])) {
+                $options = array('body' => $params['body']);
+            } else {
+                $options = array();
+            }
+
+            $request = $this->getHttpClient()->post(
+                $request->getUrl(),
+                $request->getHeaders(),
+                $options
+            );
+        } elseif ($request->getMethod() == RequestInterface::PUT) {
+            if (isset($params['body']) && !empty($params['body'])) {
+                $options = array('body' => $params['body']);
+            } else {
+                $options = array();
+            }
+
+            $request = $this->getHttpClient()->put(
+                $request->getUrl(),
+                $request->getHeaders(),
+                $options
+            );
+        } elseif ($request->getMethod() == RequestInterface::PATCH) {
+            if (isset($params['body']) && !empty($params['body'])) {
+                $options = array('body' => $params['body']);
+            } else {
+                $options = array();
+            }
+
+            $request = $this->getHttpClient()->patch(
+                $request->getUrl(),
+                $request->getHeaders(),
+                $options
+            );
+        } elseif ($request->getMethod() == RequestInterface::DELETE) {
+            if (isset($params['body']) && !empty($params['body'])) {
+                $options = array('body' => $params['body']);
+            } else {
+                $options = array();
+            }
+
+            $request = $this->getHttpClient()->delete(
+                $request->getUrl(),
+                $request->getHeaders(),
+                $options
+            );
+        }
+
+        return $request->send();
     }
 
     /**
@@ -597,10 +655,10 @@ abstract class AbstractProvider
      * @return mixed
      * @throws IdentityProviderException
      */
-    public function getParsedResponse(RequestInterface $request)
+    public function getParsedResponse(RequestInterface $request, $params = array())
     {
         try {
-            $response = $this->getResponse($request);
+            $response = $this->getResponse($request, $params);
         } catch (BadResponseException $e) {
             $response = $e->getResponse();
         }
