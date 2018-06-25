@@ -302,7 +302,7 @@ abstract class AbstractProvider
             $options['scope'] = $this->getDefaultScopes();
         }
 
-        array_merge($options, array(
+        $options = array_merge($options, array(
             'response_type'   => 'code',
             'approval_prompt' => 'auto'
         ));
