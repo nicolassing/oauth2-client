@@ -14,10 +14,9 @@
 
 namespace League\OAuth2\Client\Token;
 
-use JsonSerializable;
 use RuntimeException;
 
-interface AccessTokenInterface extends JsonSerializable
+interface AccessTokenInterface
 {
     /**
      * Returns the access token string of this instance.
