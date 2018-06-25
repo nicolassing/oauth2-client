@@ -583,67 +583,12 @@ abstract class AbstractProvider
      */
     public function getResponse(RequestInterface $request, $params = array())
     {
-        if ($request->getMethod() == RequestInterface::GET) {
-            if (isset($params['body']) && !empty($params['body'])) {
-                $options = array('body' => $params['body']);
-            } else {
-                $options = array();
-            }
-
-            $request = $this->getHttpClient()->get(
-                $request->getUrl(),
-                $request->getHeaders(),
-                $options
-            );
-        } elseif ($request->getMethod() == RequestInterface::POST) {
-            if (isset($params['body']) && !empty($params['body'])) {
-                $options = array('body' => $params['body']);
-            } else {
-                $options = array();
-            }
-
-            $request = $this->getHttpClient()->post(
-                $request->getUrl(),
-                $request->getHeaders(),
-                $options
-            );
-        } elseif ($request->getMethod() == RequestInterface::PUT) {
-            if (isset($params['body']) && !empty($params['body'])) {
-                $options = array('body' => $params['body']);
-            } else {
-                $options = array();
-            }
-
-            $request = $this->getHttpClient()->put(
-                $request->getUrl(),
-                $request->getHeaders(),
-                $options
-            );
-        } elseif ($request->getMethod() == RequestInterface::PATCH) {
-            if (isset($params['body']) && !empty($params['body'])) {
-                $options = array('body' => $params['body']);
-            } else {
-                $options = array();
-            }
-
-            $request = $this->getHttpClient()->patch(
-                $request->getUrl(),
-                $request->getHeaders(),
-                $options
-            );
-        } elseif ($request->getMethod() == RequestInterface::DELETE) {
-            if (isset($params['body']) && !empty($params['body'])) {
-                $options = array('body' => $params['body']);
-            } else {
-                $options = array();
-            }
-
-            $request = $this->getHttpClient()->delete(
-                $request->getUrl(),
-                $request->getHeaders(),
-                $options
-            );
-        }
+        $request = $this->getHttpClient()->createRequest(
+            $request->getMethod(),
+            $request->getUrl(),
+            $request->getHeaders(),
+            $params
+        );
 
         return $request->send();
     }
@@ -699,7 +644,7 @@ abstract class AbstractProvider
      */
     protected function getContentType(Response $response)
     {
-        return join(';', (array) $response->getHeader('content-type'));
+        return join(';', (array) $response->getHeader('content-type')->toArray());
     }
 
     /**
