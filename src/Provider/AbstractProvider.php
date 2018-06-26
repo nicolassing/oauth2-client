@@ -867,6 +867,6 @@ abstract class AbstractProvider
      */
     protected function buildQueryString($params)
     {
-        return http_build_query($params, null, '&', \PHP_QUERY_RFC3986);
+        return http_build_query($params, null, '&', PHP_QUERY_RFC3986);
     }
 }
